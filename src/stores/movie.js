@@ -1,4 +1,5 @@
 import { computed, reactive } from 'vue'
+import { useStorage } from '@vueuse/core'
 import { defineStore } from 'pinia'
 import movieService from '@/services/movies'
 import { useRouter } from 'vue-router'
@@ -12,6 +13,8 @@ export const useMovieStore = defineStore('movies', () => {
     currentMovie: {},
   })
 
+  const pages = useStorage('movieStore', 1)
+
   const router = useRouter()
 
   const genres = computed(() => state.genres)
@@ -23,7 +26,7 @@ export const useMovieStore = defineStore('movies', () => {
   async function getMoviesGenres() {
     try {
       state.isLoading = true
-      const response = await movieService.getMoviesGenres();
+      const response = await movieService.getMoviesGenres(pages.value);
       state.genres = response.genres
       console.log(response)
     }
@@ -38,7 +41,7 @@ export const useMovieStore = defineStore('movies', () => {
   async function getMoviesByGenre(genreId) {
     try {
       state.isLoading = true
-      const response = await movieService.getMoviesByGenre(genreId);
+      const response = await movieService.getMoviesByGenre(genreId, pages.value);
       state.currentGenreId = genreId
       state.movies = response.results
     }
@@ -53,7 +56,7 @@ export const useMovieStore = defineStore('movies', () => {
   async function getMoviesDetails(movieId) {
     try {
       state.isLoading = true
-      const response = await movieService.getMoviesDetails(movieId);
+      const response = await movieService.getMoviesDetails(movieId, pages.value);
       state.currentMovie = response
     }
     catch (error) {
@@ -67,7 +70,7 @@ export const useMovieStore = defineStore('movies', () => {
   async function getPopularMovies() {
     try {
       state.isLoading = true
-      const response = await movieService.getPopularMovies();
+      const response = await movieService.getPopularMovies(pages.value);
       state.movies = response.results
     }
     catch (error) {
@@ -87,11 +90,13 @@ export const useMovieStore = defineStore('movies', () => {
   }
 
   return {
+    state,
     genres,
     movies,
     isLoading,
     currentGenreId,
     currentMovie,
+    pages,
     getMoviesGenres,
     getMoviesByGenre,
     getMoviesDetails,

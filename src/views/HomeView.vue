@@ -19,7 +19,7 @@ onMounted(async () => {
 <template>
   <div class="home">
     <header class="home-header">
-      <h1>Bem-vindo ao Mundo da Animação</h1>
+      <h1>Bem-vindo ao Cartoon</h1>
       <p>Descubra animações incríveis e mergulhe em histórias fantásticas!</p>
       <router-link to="/movies" class="explore-button">Explorar Mais</router-link>
     </header>
@@ -51,7 +51,7 @@ onMounted(async () => {
   font-family: Arial, sans-serif;
   padding: 20px;
   text-align: center;
-  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+  background: linear-gradient(135deg, #4d94ff, #c3cfe2);
   color: #333;
 }
 

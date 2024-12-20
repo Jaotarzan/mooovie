@@ -8,41 +8,68 @@ const movieStore = useMovieStore()
 onMounted(async () => {
   await movieStore.getMoviesGenres()
 })
+
+function page(operatio) {
+  if (operatio == '+') {
+  movieStore.currentPage = movieStore.pages + 1
+  } else if (operatio == '-') {
+  movieStore.currentPage = movieStore.pages - 1
+  }
+  movieStore.getMoviesByGenre(movieStore.currentGenreId)
+  console.log(movieStore.movies)
+}
 </script>
 
 <template>
   <loading v-model:active="movieStore.isLoading" is-full-page />
-  <h1>Filmes</h1>
-  <ul class="genre-list">
-    <li 
-    v-for="genre in movieStore.genres" 
-    :key="genre.id" 
-    @click="movieStore.getMoviesByGenre(genre.id)"
-    class="genre-item"
-    :class="{ active: genre.id === movieStore.currentGenreId }"
-    >
-      {{ genre.name }}
-    </li>
-  </ul>
-  <div class="movie-list">
-    <div v-for="movie in movieStore.movies" :key="movie.id" class="movie-card">
+  <div class="body" v-if="movieStore.movies.length > 0 && movieStore.genres.length > 0">
+    <h1 class="title">Filmes de animação</h1>
+    <ul class="genre-list">
+      <li v-for="genre in movieStore.genres" :key="genre.id" @click="movieStore.getMoviesByGenre(genre.id)"
+        class="genre-item" :class="{ active: genre.id === movieStore.currentGenreId }">
+        {{ genre.name }}
+      </li>
+    </ul>
+    <div class="movie-list">
+      <div v-for="movie in movieStore.movies" :key="movie.id" class="movie-card">
 
-      <img :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" :alt="movie.title" @click="movieStore.openMovie(movie.id)"/>
-      <div class="movie-details">
-        <p class="movie-title">{{ movie.title }}</p>
-        <p class="movie-release-date">{{ movieStore.formatDate(movie.release_date) }}</p>
-        <p class="movie-genres">
-          <span v-for="genre_id in movie.genre_ids" :key="genre_id" @click="movieStore.getMoviesByGenre(genre_id)">
-            {{ movieStore.getGenreName(genre_id) }}
-          </span>
-        </p>
+        <img :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" :alt="movie.title"
+          @click="movieStore.openMovie(movie.id)" />
+        <div class="movie-details">
+          <p class="movie-title">{{ movie.title }}</p>
+          <p class="movie-release-date">{{ movieStore.formatDate(movie.release_date) }}</p>
+          <p class="movie-genres">
+            <span v-for="genre_id in movie.genre_ids" :key="genre_id" @click="movieStore.getMoviesByGenre(genre_id)">
+              {{ movieStore.getGenreName(genre_id) }}
+            </span>
+          </p>
+        </div>
       </div>
-
     </div>
   </div>
 </template>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
+.pagination {
+  display: flex;
+  width: 100%;
+  text-align: center;
+  justify-content: center;
+  gap: 1rem;
+  align-items: center;
+  height: 3rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  cursor: pointer;
+  font-size: 2rem;
+}
+
+.pagination p {
+  font-size: 1.5rem;
+}
+
 .genre-list {
   display: flex;
   justify-content: center;
@@ -71,7 +98,6 @@ onMounted(async () => {
   flex-wrap: wrap;
   margin-left: 1rem;
   margin-right: 1rem;
-  gap: 1rem;
 }
 
 .movie-card {
@@ -80,6 +106,7 @@ onMounted(async () => {
   border-radius: 0.5rem;
   overflow: hidden;
   box-shadow: 0 0 0.5rem #000;
+  margin: 1rem;
   cursor: pointer;
 }
 
@@ -143,4 +170,12 @@ onMounted(async () => {
   background-color: #455a08;
   box-shadow: 0 0 0.5rem #748708;
 }
+
+.title {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 3rem;
+  color: rgb(38, 76, 145);
+}
+
 </style>

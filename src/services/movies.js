@@ -11,12 +11,14 @@ class movieService {
         }
     }
 
-    async getMoviesByGenre(genreId) {
+    async getMoviesByGenre(genreId, Page) {
         try {
             const response = await api.get('discover/movie', {
                 params: {
                     with_genres: `16, ${genreId}`,
-                    language: 'pt-BR'
+                    language: 'pt-BR',
+                    page: Page,
+                    include_adult: false,
                 }
             });            
             return response.data
@@ -26,10 +28,12 @@ class movieService {
         }
     }
 
-    async getMoviesDetails(movieId) {
+    async getMoviesDetails(movieId, Page) {
         try {
             const response = await api.get(`movie/${movieId}`, {
                 params: {
+                    page: Page,
+                    include_adult: false,
                     language: 'pt-BR',
                 }
             });
@@ -41,13 +45,15 @@ class movieService {
         }
     }
 
-    async getPopularMovies() {
+    async getPopularMovies(Page) {
         try {
             const response = await api.get('discover/movie', {
                 params: {
                     with_genres: 16,
                     language: 'pt-BR',
                     sort_by: 'popularity.desc',
+                    page: Page,
+                    include_adult: false,
                 }
             });   
             return response.data
